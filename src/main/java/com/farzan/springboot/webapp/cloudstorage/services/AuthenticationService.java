@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 
+
 @Service
 public class AuthenticationService implements AuthenticationProvider {
     private HashService hashService;
@@ -28,11 +29,12 @@ public class AuthenticationService implements AuthenticationProvider {
         User user = userMapper.findUser(username);
         if(user != null){
             String encodedSalt = user.getSalt();
-            String hashedPassword = hashService.getHashedValue(user.getPassword(), encodedSalt);
+            String hashedPassword = hashService.getHashedValue(password, encodedSalt);
             if(user.getPassword().equals(hashedPassword)){
                 return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
             }
         }
+
         return null;
     }
 
@@ -40,6 +42,5 @@ public class AuthenticationService implements AuthenticationProvider {
     public boolean supports(Class<?> auth){
         return auth.equals(UsernamePasswordAuthenticationToken.class);
     }
-
 
 }
