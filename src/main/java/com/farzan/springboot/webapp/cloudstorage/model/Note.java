@@ -1,12 +1,14 @@
 package com.farzan.springboot.webapp.cloudstorage.model;
 
-public class Notes {
+public class Note {
     private Integer noteId;
+    private String noteTitle;
     private String noteDescription;
     private Integer userId;
 
-    public Notes(Integer noteId, String noteDescription, Integer userId) {
+    public Note(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
         this.noteId = noteId;
+        this.noteTitle = noteTitle;
         this.noteDescription = noteDescription;
         this.userId = userId;
     }
@@ -17,6 +19,14 @@ public class Notes {
 
     public void setNoteId(Integer noteId) {
         this.noteId = noteId;
+    }
+
+    public String getNoteTitle() {
+        return noteTitle;
+    }
+
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
 
     public String getNoteDescription() {

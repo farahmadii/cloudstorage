@@ -1,7 +1,7 @@
 package com.farzan.springboot.webapp.cloudstorage.model;
 import java.io.InputStream;
 
-public class Files {
+public class File {
     private Integer fileId;
     private String fileName;
     private String contentType;
@@ -11,7 +11,7 @@ public class Files {
     // private byte[] fileData;
 
 
-    public Files(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, InputStream fileData) {
+    public File(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, InputStream fileData) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
