@@ -12,6 +12,7 @@ public class Note {
         this.noteDescription = noteDescription;
         this.userId = userId;
     }
+    public Note(){};
 
     public Integer getNoteId() {
         return noteId;
