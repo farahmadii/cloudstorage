@@ -2,8 +2,6 @@ package com.farzan.springboot.webapp.cloudstorage.controller;
 
 
 
-import com.farzan.springboot.webapp.cloudstorage.model.File;
-import com.farzan.springboot.webapp.cloudstorage.model.Note;
 import com.farzan.springboot.webapp.cloudstorage.services.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -33,14 +31,10 @@ public class HomeController {
     public String getHomePage(Authentication authentication, Model model) {
         Integer userId = this.userService.findUser(authentication.getName()).getUserId();
         model.addAttribute("encryptionService", encryptionService);
-//        model.addAttribute("credentials", this.credentialService.getCredentialByUserId(userId));
+        model.addAttribute("credentials", this.credentialService.getAllCredentialsByUserId(userId));
         model.addAttribute("notes", this.noteService.getAllNotesByUserId(userId));
         model.addAttribute("files", this.fileStorageService.getAllFilesByUserId(userId));
-//        model.addAttribute("'/notes'", new Note());
-//        model.addAttribute("deleteNote", new Note());
-//        model.addAttribute("credentialForm", new Credential());
-//        model.addAttribute("deleteCredential", new Credential());
-//        model.addAttribute("deleteFile", new File());
+
         return "home";
     }
 
