@@ -3,7 +3,7 @@
 * the back-end with Spring Boot
   * Authentication by spring security and data persistent layer by MyBatis.
 * the front-end with Thymeleaf
-* Application tests with Junit and Selenium
+* Application tests (integration/automated user tests) with Junit and Selenium
 
 #### functionalities include:
 1. Simple File Storage: Upload/download/remove files
