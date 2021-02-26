@@ -2,7 +2,6 @@ package com.farzan.springboot.webapp.cloudstorage.controller;
 
 
 import com.farzan.springboot.webapp.cloudstorage.model.Credential;
-import com.farzan.springboot.webapp.cloudstorage.model.Note;
 import com.farzan.springboot.webapp.cloudstorage.model.User;
 import com.farzan.springboot.webapp.cloudstorage.services.CredentialService;
 import com.farzan.springboot.webapp.cloudstorage.services.UserService;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class CredentialsController {
@@ -26,8 +24,7 @@ public class CredentialsController {
     }
 
     @PostMapping("/credentials")
-    public ModelAndView addCredential(Authentication authentication, @ModelAttribute Credential credential,
-                                      RedirectAttributes redirectAttributes, Model model){
+    public ModelAndView addCredential(Authentication authentication, @ModelAttribute Credential credential, Model model){
 
         User user = userService.findUser(authentication.getName());
         Integer userId = user.getUserId();

@@ -1,11 +1,9 @@
 package com.farzan.springboot.webapp.cloudstorage;
 
-import com.farzan.springboot.webapp.cloudstorage.PageObjects.CredentialsTabPage;
-import com.farzan.springboot.webapp.cloudstorage.PageObjects.HomePage;
-import com.farzan.springboot.webapp.cloudstorage.PageObjects.SigninPage;
-import com.farzan.springboot.webapp.cloudstorage.PageObjects.SignupPage;
+import com.farzan.springboot.webapp.cloudstorage.PageObjects.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,7 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
-import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -25,6 +22,22 @@ class CloudStorageApplicationTests {
 	private int port;
 
 	private String baseURL;
+	private String firstName = "Farzan";
+	private String lastName = "Farzani";
+	private String username = "hyperuser";
+	private String password = "T#ur^t8oG3Tfe60";
+	private String noteTitle = "new test";
+	private String noteDescription = "note content is going to be something really fun!";
+	private String newNoteTitle = "new old test";
+	private String newNoteDescription = "note contents can change from time to time!";
+	private String url = "https://start.spring.io/";
+	private String credUsername = "springnewbie";
+	private String credPassword = "w5M1ZwDbb24m$hp";
+	private String newUrl = "https://classroom.udacity.com/";
+	private String newCredUsername = "springguru";
+	private String newCredPassword = "tJOT59s16%CW32i";
+
+
 
 	// driver should be static cuz it is initiated in @BeforeAll method, when no object is yet instantiated.
 	private static WebDriver driver;
@@ -82,20 +95,25 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
 
+	@Order(5)
+	@Test
+	public void getRandomPage() {
+		driver.get("http://localhost:" + this.port + "/blahblahblah");
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+
 	/*
 	 2) Write a Selenium test that signs up a new user, logs that user in, verifies that they can access the home page,
 	 	then logs out and verifies that the home page is no longer accessible.
 	*/
-	@Order(5)
+	@Order(6)
 	@Test
 	public void userSignUpInOutProcess(){
 
 		// first: sign up
-		String username = "hyperuser";
-		String password = "T#ur^t8oG3Tfe60";
 		driver.get(baseURL + "/signup");
 		SignupPage signupPage = new SignupPage(driver);
-		signupPage.signup("Farzan", "Farzani", username, password);
+		signupPage.signup(firstName,lastName , username, password);
 
 		// then: sign in
 		driver.get(baseURL + "/login");
@@ -116,11 +134,10 @@ class CloudStorageApplicationTests {
 	 	visible in the note list.
 	*/
 
-	@Order(6)
+	@Order(7)
 	@Test
 	public void createNoteAndCheckIt(){
-		String username = "hyperuser";
-		String password = "T#ur^t8oG3Tfe60";
+		WebDriverWait wait = new WebDriverWait(driver, 50);
 		// first: sign in
 		driver.get(baseURL + "/login");
 		SigninPage signinPage = new SigninPage(driver);
@@ -128,14 +145,26 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("Home", driver.getTitle());
 
 		// second: add a note
-		 WebDriverWait wait = new WebDriverWait(driver, 100);
-		 wait.withTimeout(Duration.ofSeconds(50));
-		String noteTitle = "new test";
-		String noteDescription = "note content is going to be something really fun!";
-		driver.get(baseURL + "home");
+		driver.get(baseURL + "/home");
 		HomePage homePage = new HomePage(driver);
-		homePage.createNoteAndSeeIt(noteTitle, noteDescription);
+		homePage.clickOnNoteTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("newNote")));
+		homePage.clickNewNote();
 
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
+
+		homePage.createNote(noteTitle, noteDescription);
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+		// we're now on /notes but the result.html is rendered (according to logic)
+
+		// third: check newly created note
+		// By clicking on home link on result, we'll automatically be taken to home page
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		// no need to clickOnNoteTab() as js localstorage will keep the current tab
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+		homePage1.checkNote(noteTitle);
 	}
 
 	/*
@@ -143,25 +172,163 @@ class CloudStorageApplicationTests {
 	 	existing note, changes the note data, saves the changes, and verifies that the changes appear in the note list.
 	*/
 
+	@Order(8)
+	@Test
+	public void editNoteAndCheckIt(){
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		// first: sign in
+		driver.get(baseURL + "/login");
+		SigninPage signinPage = new SigninPage(driver);
+		signinPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// second: update a note
+		driver.get(baseURL + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.clickOnNoteTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("edit-note")));
+		// controller is triggered by edit button but the logic for update is the same in service
+		homePage.clickEditNote();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
+		homePage.clearNotenput();
+		homePage.createNote(newNoteTitle, newNoteDescription);
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+
+		// third: check newly updated note
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+		homePage1.checkNote(newNoteTitle);
+	}
+
 	/*
 	 5) Write a Selenium test that logs in an existing user with existing notes, clicks the delete note button on an
 	 	existing note, and verifies that the note no longer appears in the note list.
 	*/
+
+	@Order(9)
+	@Test
+	public void deleteNoteAndCheckIt(){
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		// first: sign in
+		driver.get(baseURL + "/login");
+		SigninPage signinPage = new SigninPage(driver);
+		signinPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// second: delete a note
+		driver.get(baseURL + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.clickOnNoteTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("delete-note")));
+		homePage.clickDeleteNote();
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+
+		// third: check newly updated note
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+		homePage1.checkDeleteNote(newNoteTitle);
+	}
 
 	/*
 	 6) Write a Selenium test that logs in an existing user, creates a credential and verifies that the credential
 	 	details are visible in the credential list.
 	*/
 
+	@Order(10)
+	@Test
+	public void createCredentialsAndCheckThem(){
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		// first: sign in
+		driver.get(baseURL + "/login");
+		SigninPage signinPage = new SigninPage(driver);
+		signinPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// second: create credentials
+		driver.get(baseURL + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.clickOnCredTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("newCred")));
+		homePage.clickNewCredentials();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
+		homePage.saveCredentials(url, credUsername, credPassword);
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+
+		// third: check newly created credentials
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+		homePage1.checkCredentials(credUsername);
+	}
+
 	/*
 	 7) Write a Selenium test that logs in an existing user with existing credentials, clicks the edit credential
 	 	button on an existing credential, changes the credential data, saves the changes, and verifies that the changes
 	 	appear in the credential list.
 	*/
+	@Order(11)
+	@Test
+	public void editCredentialsAndCheckThem(){
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		// first: sign in
+		driver.get(baseURL + "/login");
+		SigninPage signinPage = new SigninPage(driver);
+		signinPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// second: update a note
+		driver.get(baseURL + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.clickOnCredTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("edit-creds")));
+		homePage.clickEditCreds();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
+		homePage.clearCredsInput();
+		homePage.saveCredentials(newUrl, newCredUsername, newCredPassword);
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+
+		// third: check newly updated note
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+		homePage1.checkCredentials(newCredUsername);
+	}
 
 	/*
 	 8) Write a Selenium test that logs in an existing user with existing credentials, clicks the delete credential
 	 	button on an existing credential, and verifies that the credential no longer appears in the credential list.
 	*/
+
+	@Order(12)
+	@Test
+	public void deleteCredentialsAndCheckThem(){
+		WebDriverWait wait = new WebDriverWait(driver, 50);
+		// first: sign in
+		driver.get(baseURL + "/login");
+		SigninPage signinPage = new SigninPage(driver);
+		signinPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// second: delete a note
+		driver.get(baseURL + "/home");
+		HomePage homePage = new HomePage(driver);
+		homePage.clickOnCredTab();
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("delete-creds")));
+		homePage.clickDeleteCredentials();
+		Assertions.assertEquals("Result", driver.getTitle());
+		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
+
+		// third: check newly updated note
+		driver.get(baseURL + "/home");
+		HomePage homePage1 = new HomePage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+		homePage1.checkDeleteCreds(newCredUsername);
+	}
 
 }
