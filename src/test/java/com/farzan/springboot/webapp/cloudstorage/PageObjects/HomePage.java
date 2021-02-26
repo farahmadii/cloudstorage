@@ -7,10 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 public class HomePage {
@@ -50,15 +47,23 @@ public class HomePage {
         this.logoutButton.click();
     }
 
-    public void createNoteAndSeeIt(String noteTitle, String noteDescription){
+    public void clickOnNoteTab(){
         this.noteTab.click();
+    }
+    public void clickNewNote(){
         this.newNoteButton.click();
+    }
+
+    public void createNote(String noteTitle, String noteDescription) {
+
         this.noteTitleField.sendKeys(noteTitle);
         this.noteDescriptionField.sendKeys(noteDescription);
         this.saveNoteButton.click();
-        this.noteTab.click();
+    }
 
-        List<WebElement> notesList= notesTable.findElements(By.tagName("th"));
+    public void checkNote(String noteTitle){
+
+        List<WebElement> notesList = this.notesTable.findElements(By.tagName("th"));
 
         Boolean noteCreated = false;
         for (int i = 0; i < notesList.size(); i++) {
