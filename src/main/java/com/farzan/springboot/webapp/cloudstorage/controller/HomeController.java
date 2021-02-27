@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 @RequestMapping(value = "/home")
 public class HomeController {
@@ -36,16 +37,6 @@ public class HomeController {
         model.addAttribute("files", this.fileStorageService.getAllFilesByUserId(userId));
 
         return "home";
-    }
-
-    @PostMapping("/logout")
-    public String logout() {
-        return "login?logout";
-    }
-
-    @GetMapping("/logout")
-    public String logoutView() {
-        return "redirect:/login?logout";
     }
 
 }
