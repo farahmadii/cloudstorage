@@ -1,5 +1,6 @@
 package com.farzan.springboot.webapp.cloudstorage.mapper;
 
+import com.farzan.springboot.webapp.cloudstorage.model.File;
 import com.farzan.springboot.webapp.cloudstorage.model.Note;
 import org.apache.ibatis.annotations.*;
 
@@ -24,4 +25,7 @@ public interface NoteMapper {
 
     @Delete("DELETE FROM NOTES WHERE noteid =#{noteId} and userid =#{userId}")
     Integer deleteNote(Integer noteId, Integer userId);
+
+    @Select("SELECT * FROM NOTES WHERE userid =#{userId} and notetitle =#{noteTitle} and notedescription =#{noteDescription}")
+    File noteTitleAndDescriptionExist(Integer userId, String noteTitle, String noteDescription);
 }

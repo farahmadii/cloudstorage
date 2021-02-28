@@ -32,4 +32,8 @@ public class NoteService {
         return noteMapper.getAllNotes(userId);
     }
 
+    public boolean NoteTitleAndDescriptionExist(Integer userId, String noteTitle, String noteDescription){
+        return (this.noteMapper.noteTitleAndDescriptionExist(userId, noteTitle, noteDescription) != null);
+    }
+
 }

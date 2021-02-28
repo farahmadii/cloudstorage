@@ -39,6 +39,14 @@ public class NoteController {
         try {
              // this is when the popup is opened to create a new note (noteId is null)
             if (note.getNoteId() == null) {
+                // check if the same content and title is already in DB for notes
+                if(noteService.NoteTitleAndDescriptionExist(userId, note.getNoteTitle(), note.getNoteDescription())) {
+                    model.addAttribute("success", false);
+                    model.addAttribute("error", true);
+                    model.addAttribute("message", "- same note already exists");
+                    return new ModelAndView("result");
+                }
+
                 log.info("*************  user id: {}", userId);
                 noteService.addNote(note);
                 model.addAttribute("success", true);
