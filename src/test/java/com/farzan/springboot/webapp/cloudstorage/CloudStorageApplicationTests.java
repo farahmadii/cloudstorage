@@ -281,7 +281,7 @@ class CloudStorageApplicationTests {
 		signinPage.login(username, password);
 		Assertions.assertEquals("Home", driver.getTitle());
 
-		// second: update a note
+		// second: update a credentials
 		driver.get(baseURL + "/home");
 		HomePage homePage = new HomePage(driver);
 		homePage.clickOnCredTab();
@@ -293,7 +293,7 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("Result", driver.getTitle());
 		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
 
-		// third: check newly updated note
+		// third: check newly updated credentials
 		driver.get(baseURL + "/home");
 		HomePage homePage1 = new HomePage(driver);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
@@ -315,7 +315,7 @@ class CloudStorageApplicationTests {
 		signinPage.login(username, password);
 		Assertions.assertEquals("Home", driver.getTitle());
 
-		// second: delete a note
+		// second: delete a credentials
 		driver.get(baseURL + "/home");
 		HomePage homePage = new HomePage(driver);
 		homePage.clickOnCredTab();
@@ -324,7 +324,7 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("Result", driver.getTitle());
 		Assertions.assertNotNull(driver.findElement(By.className("alert-success")));
 
-		// third: check newly updated note
+		// third: check newly updated credentials
 		driver.get(baseURL + "/home");
 		HomePage homePage1 = new HomePage(driver);
 		wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
