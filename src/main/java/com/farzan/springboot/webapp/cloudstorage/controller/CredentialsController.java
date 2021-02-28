@@ -31,11 +31,13 @@ public class CredentialsController {
         credential.setUserId(userId);
 
         try{
+                // this is when the popup is opened to create a new cred (credentialId is null)
             if(credential.getCredentialId() == null){
                 credentialService.addCredential(credential);
                 model.addAttribute("success", true);
                 model.addAttribute("message", "- Credentials added!");
             } else {
+                // this is when the popup is opened to update an existing cred
                 credentialService.updateCredential(credential);
                 model.addAttribute("success", true);
                 model.addAttribute("message", "- Credentials updated!");

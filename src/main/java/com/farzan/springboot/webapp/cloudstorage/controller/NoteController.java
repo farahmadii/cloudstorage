@@ -37,11 +37,13 @@ public class NoteController {
         log.info("note id: {}, note title: {}, note desc: {}, user id: {}", note.getNoteId(), note.getNoteTitle(), note.getNoteDescription(), note.getUserId());
 
         try {
+             // this is when the popup is opened to create a new note (noteId is null)
             if (note.getNoteId() == null) {
                 log.info("*************  user id: {}", userId);
                 noteService.addNote(note);
                 model.addAttribute("success", true);
                 model.addAttribute("message", "- Note added!");
+                // this is when the popup is opened to update an existing note
             } else {
                 noteService.editNote(note);
                 model.addAttribute("success", true);
