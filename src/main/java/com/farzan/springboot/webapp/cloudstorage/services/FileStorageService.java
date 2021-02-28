@@ -7,9 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -21,7 +20,7 @@ public class FileStorageService {
         this.fileMapper = fileMapper;
     }
 
-    public int uploadFile(Integer userId, MultipartFile fileUpload) throws IOException, FileNotFoundException {
+    public int uploadFile(Integer userId, MultipartFile fileUpload) throws IOException{
         File newFile = new File();
         newFile.setUserId(userId);
         newFile.setFileData(fileUpload.getBytes());

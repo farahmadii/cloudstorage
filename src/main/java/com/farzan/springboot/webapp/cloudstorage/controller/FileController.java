@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
 @Controller
 @Log4j2
 public class FileController {
@@ -32,7 +33,8 @@ public class FileController {
 
     @PostMapping(value="/file-upload")
     public ModelAndView handleFileUpload(Authentication authentication, @RequestParam("fileUpload") MultipartFile fileUpload, Model model){
-        if(fileUpload.isEmpty()){
+        // check if no file is selected to upload
+        if (fileUpload.isEmpty()) {
             model.addAttribute("success", false);
             model.addAttribute("error", true);
             model.addAttribute("message", "- No file selected to upload");
@@ -42,19 +44,27 @@ public class FileController {
         Integer userId = user.getUserId();
 
 
+        // check if the file name already exists
         if (fileStorageService.fileNameExists(fileUpload.getOriginalFilename(), userId)) {
             model.addAttribute("success", false);
             model.addAttribute("error", true);
             model.addAttribute("message", "- File name already exists");
             return new ModelAndView("result");
         }
-        try{
+        // applying limits on file size
+        if (fileUpload.getSize() > 104857600){
+            model.addAttribute("success", false);
+            model.addAttribute("error", true);
+            model.addAttribute("message", "- File size exceeds the limits, file size should be < 100MB");
+            return new ModelAndView("result");
+        }
+        try {
             fileStorageService.uploadFile(userId, fileUpload);
             model.addAttribute("success", true);
             model.addAttribute("message", "- File uploaded successfully");
         } catch (Exception e) {
-            model.addAttribute("error", true);
-            model.addAttribute("message", "- System error!" + e.getMessage());
+                model.addAttribute("error", true);
+                model.addAttribute("message", "- System error!" + e.getMessage());
         }
         return new ModelAndView("result");
     }
@@ -94,5 +104,4 @@ public class FileController {
                 .body(resource);
 
     }
-
 }
